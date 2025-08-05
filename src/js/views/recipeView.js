@@ -4,23 +4,25 @@ import fracty from "fracty";
 class RecipeView {
 	#parentEl = document.querySelector(".recipe");
 	#data;
+  #errorMessage = "We could not find that recipe. Please try another one!"
+  #message = ""
 
 	render(data) {
 		this.#data = data;
 		const html = this.#generateHTML();
-		this.#addElement("afterbegin", html);
+		this.#replaceParent(html);
 	}
 
 	#clearParent() {
 		this.#parentEl.innerHTML = "";
 	}
 
-	#addElement(positon, html) {
+	#replaceParent(html) {
 		this.#clearParent();
-		this.#parentEl.insertAdjacentHTML(positon, html);
+		this.#parentEl.insertAdjacentHTML("afterbegin", html);
 	}
 
-	addSpinner = function () {
+	addSpinner() {
 		const html = `
       <div class="spinner">
         <svg>
@@ -28,8 +30,8 @@ class RecipeView {
         </svg>
       </div>
     `;
-		this.#addElement("afterbegin", html);
-	};
+		this.#replaceParent(html);
+	}
 
 	addHandlerRender(handler) {
 		// don't need to repeat
@@ -37,6 +39,34 @@ class RecipeView {
 		// window.addEventListener("load", showRecipe);
 		// loop it
 		["hashchange", "load"].forEach(event => window.addEventListener(event, handler));
+	}
+
+	renderError(message = this.#errorMessage) {
+		const html = `
+      <div class="error">
+        <div>
+          <svg>
+            <use href="${icons}#icon-alert-triangle"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div> 
+    `;
+		this.#replaceParent(html);
+	}
+  
+	renderMessage(message = this.#message) {
+		const html = `
+      <div class="message">
+        <div>
+          <svg>
+            <use href="${icons}#icon-smile"></use>
+          </svg>
+        </div>
+        <p>${message}</p>
+      </div> 
+    `;
+		this.#replaceParent(html);
 	}
 
 	#generateHTML() {

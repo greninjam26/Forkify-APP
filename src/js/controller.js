@@ -21,7 +21,7 @@ const showRecipe = async function () {
 		// render the elements
 		recipeView.render(model.state.recipe);
 	} catch (err) {
-		console.error(err);
+		recipeView.renderError();
 	}
 };
 

@@ -22,6 +22,6 @@ export const fetchRecipe = async function (id) {
 		};
 		console.log(recipe);
 	} catch (err) {
-		console.error(err);
+		throw err;
 	}
 };
