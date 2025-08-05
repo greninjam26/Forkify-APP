@@ -21,11 +21,11 @@ const addSpinner = function (parentEl) {
 
 const showRecipe = async function () {
 	try {
+		const id = window.location.hash.slice(1);
+    if(!id) return;
 		addSpinner(recipeDetails);
 		// fetch the recipe
-		const resp = await fetch(
-			"https://forkify-api.jonas.io/api/v2/recipes/664c8f193e7aa067e94e8476"
-		);
+		const resp = await fetch(`https://forkify-api.jonas.io/api/v2/recipes/${id}`);
 		if (!resp.ok) throw new Error(`🐛 💥 ${resp.message} (${resp.status})`);
 		const data = await resp.json();
 		console.log(data);
@@ -142,4 +142,8 @@ const showRecipe = async function () {
 	}
 };
 
-showRecipe();
+// don't need to repeat
+// window.addEventListener("hashchange", showRecipe);
+// window.addEventListener("load", showRecipe);
+// loop it
+["hashchange", "load"].forEach(event => window.addEventListener(event, showRecipe));
