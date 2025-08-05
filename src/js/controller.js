@@ -17,7 +17,7 @@ const showRecipe = async function () {
 		recipeView.addSpinner();
 		// fetch the recipe
 		await model.fetchRecipe(id);
-    console.log(model.state.recipe);
+		console.log(model.state.recipe);
 		// render the elements
 		recipeView.render(model.state.recipe);
 	} catch (err) {
@@ -25,8 +25,8 @@ const showRecipe = async function () {
 	}
 };
 
-// don't need to repeat
-// window.addEventListener("hashchange", showRecipe);
-// window.addEventListener("load", showRecipe);
-// loop it
-["hashchange", "load"].forEach(event => window.addEventListener(event, showRecipe));
+const init = function () {
+	recipeView.addHandlerRender(showRecipe);
+};
+
+init();

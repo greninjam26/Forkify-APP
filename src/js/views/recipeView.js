@@ -31,6 +31,14 @@ class RecipeView {
 		this.#addElement("afterbegin", html);
 	};
 
+	addHandlerRender(handler) {
+		// don't need to repeat
+		// window.addEventListener("hashchange", showRecipe);
+		// window.addEventListener("load", showRecipe);
+		// loop it
+		["hashchange", "load"].forEach(event => window.addEventListener(event, handler));
+	}
+
 	#generateHTML() {
 		// create the HTML
 		return `
