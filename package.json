@@ -1,0 +1,23 @@
+{
+	"name": "forkify",
+	"version": "1.0.0",
+	"description": "Recipe Application",
+	"scripts": {
+		"start": "parcel index.html",
+		"build": "parcel build index.html"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/greninjam26/Forkify-APP.git"
+	},
+	"author": "Gavin Liu",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/greninjam26/Forkify-APP/issues"
+	},
+	"homepage": "https://github.com/greninjam26/Forkify-APP#readme",
+	"devDependencies": {
+		"@parcel/transformer-sass": "^2.15.4",
+		"parcel": "^2.15.4"
+	}
+}
