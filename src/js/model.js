@@ -1,13 +1,13 @@
+import { API_URL } from "./config";
+import { getData } from "./helpers";
+
 export const state = {
 	recipe: {},
 };
 
 export const fetchRecipe = async function (id) {
 	try {
-		const resp = await fetch(`https://forkify-api.jonas.io/api/v2/recipes/${id}`);
-		if (!resp.ok) throw new Error(`🐛 💥 ${resp.message} (${resp.status})`);
-    console.log(resp);
-		const data = await resp.json();
+		const data = await getData(`${API_URL}/${id}`);
 
 		const { recipe } = data.data;
 		state.recipe = {
@@ -20,8 +20,8 @@ export const fetchRecipe = async function (id) {
 			cookingTime: recipe.cooking_time,
 			ingredients: recipe.ingredients,
 		};
-    console.log(recipe);
+		console.log(recipe);
 	} catch (err) {
-    console.error(err);
-  }
+		console.error(err);
+	}
 };
