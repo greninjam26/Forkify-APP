@@ -23,5 +23,8 @@
 	"devDependencies": {
 		"@parcel/transformer-sass": "^2.15.4",
 		"parcel": "^2.15.4"
+	},
+	"dependencies": {
+		"fracty": "^1.0.12"
 	}
 }
