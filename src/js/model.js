@@ -1,5 +1,5 @@
-import { API_URL, RESULTS_PER_PAGE } from "./config";
-import { getData } from "./helpers";
+import { API_URL, KEY, RESULTS_PER_PAGE } from "./config";
+import { getData, sendData } from "./helpers";
 
 export const state = {
 	recipe: {},
@@ -12,61 +12,26 @@ export const state = {
 	bookmarks: [],
 };
 
+const createRecipeObject = function (data) {
+	const { recipe } = data.data;
+	return {
+		id: recipe.id,
+		title: recipe.title,
+		publisher: recipe.publisher,
+		sourceUrl: recipe.source_url,
+		image: recipe.image_url,
+		servings: recipe.servings,
+		cookingTime: recipe.cooking_time,
+		ingredients: recipe.ingredients,
+		bookmarked: false,
+		...(recipe.key && { key: recipe.key }),
+	};
+};
+
 export const fetchRecipe = async function (id) {
 	try {
-		// const data = {
-		// 	recipe: {
-		// 		publisher: "My Baking Addiction",
-		// 		ingredients: [
-		// 			{ quantity: 1, unit: "", description: "tbsp. canola or olive oil" },
-		// 			{ quantity: 0.5, unit: "cup", description: "chopped sweet onion" },
-		// 			{
-		// 				quantity: 3,
-		// 				unit: "cups",
-		// 				description: "diced fresh red yellow and green bell peppers",
-		// 			},
-		// 			{
-		// 				quantity: 1,
-		// 				unit: "",
-		// 				description: "tube refrigerated pizza dough",
-		// 			},
-		// 			{ quantity: 0.5, unit: "cup", description: "salsa" },
-		// 			{
-		// 				quantity: 2,
-		// 				unit: "cups",
-		// 				description: "sargento chefstyle shredded pepper jack cheese",
-		// 			},
-		// 			{
-		// 				quantity: null,
-		// 				unit: "",
-		// 				description: "Chopped cilantro or dried oregano",
-		// 			},
-		// 		],
-		// 		source_url:
-		// 			"http://www.mybakingaddiction.com/spicy-chicken-and-pepper-jack-pizza-recipe/",
-		// 		image_url:
-		// 			"http://forkify-api.herokuapp.com/images/FlatBread21of1a180.jpg",
-		// 		title: "Spicy Chicken and Pepper Jack Pizza",
-		// 		servings: 4,
-		// 		cooking_time: 45,
-		// 		id: "5ed6604591c37cdc054bc886",
-		// 	},
-		// };
-		// const { recipe } = data;
 		const data = await getData(`${API_URL}${id}`);
-		const { recipe } = data.data;
-		state.recipe = {
-			id: recipe.id,
-			title: recipe.title,
-			publisher: recipe.publisher,
-			sourceUrl: recipe.source_url,
-			image: recipe.image_url,
-			servings: recipe.servings,
-			cookingTime: recipe.cooking_time,
-			ingredients: recipe.ingredients,
-			bookmarked: false,
-		};
-
+		state.recipe = createRecipeObject(data);
 		if (state.bookmarks.some(bookmark => bookmark.id === id)) {
 			state.recipe.bookmarked = true;
 		}
@@ -140,4 +105,38 @@ const init = function () {
 };
 
 init();
-console.log(state);
+
+export const uploadRecipe = async function (newRecipe) {
+	try {
+		const ingredients = Object.entries(newRecipe)
+			.filter(entry => entry[0].startsWith("ingredient") && entry[1] !== "")
+			.map(ingredient => {
+				const ingredientArr = ingredient[1]
+					// .replaceAll(" ", "")
+					.split(",");
+				if (ingredientArr.length !== 3)
+					throw new Error(
+						"Wrong ingredient format! Please follow the requirement 😩"
+					);
+				const [quantity, unit, description] = ingredientArr;
+				return { quantity: quantity ? +quantity : null, unit, description };
+			});
+
+		const recipe = {
+			title: newRecipe.title,
+			publisher: newRecipe.publisher,
+			source_url: newRecipe.sourceUrl,
+			image_url: newRecipe.image,
+			servings: +newRecipe.servings,
+			cooking_time: +newRecipe.cookingTime,
+			ingredients,
+		};
+		console.log(ingredients);
+
+		const data = await sendData(`${API_URL}?key=${KEY}`, recipe);
+		state.recipe = createRecipeObject(data);
+		addBookmark(state.recipe);
+	} catch (err) {
+		throw err;
+	}
+};

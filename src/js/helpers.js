@@ -17,3 +17,22 @@ export const getData = async function (url) {
 		throw err;
 	}
 };
+
+export const sendData = async function (url, uploadData) {
+	try {
+		const resp = await Promise.race([
+			fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(uploadData),
+			}),
+			timeout(TIMEOUT_SECONDS),
+		]);
+		if (!resp.ok) throw new Error(`🐛 💥 ${resp.message} (${resp.status})`);
+		return await resp.json();
+	} catch (err) {
+		throw err;
+	}
+};
