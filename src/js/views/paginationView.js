@@ -9,7 +9,7 @@ class PaginationView extends View {
 		this._parentEl.addEventListener("click", function (e) {
 			const btn = e.target.closest(".btn--inline");
 			if (!btn) return;
-			this._curPage = Number(btn.dataset.nextpage);
+			this._curPage = Number(btn.dataset.nextPage);
 			handler(this._curPage);
 		});
 	}
@@ -44,7 +44,7 @@ class PaginationView extends View {
 		return `
       <button class="btn--inline pagination__btn--${
 			dir === "right" ? "next" : "prev"
-		}" data-nextpage="${nextPage}">
+		}" data-next-page="${nextPage}">
         <span>Page ${nextPage}</span>
         <svg class="search__icon">
           <use href="${icons}#icon-arrow-${dir}"></use>
