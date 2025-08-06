@@ -3,6 +3,15 @@ import icons from "url:../../img/icons.svg";
 export default class View {
 	_data;
 
+	/**
+	 * Render the recived object to the DOM
+	 * @param {Object | Object[]} data the data to be rendered
+	 * @param {boolean} [render=true] If false, return HTML instead of adding the HTML to the DOM
+	 * @returns {undefined | string} the HTML to be returned if render is false
+	 * @this {Object} View instance
+	 * @author Gavin
+	 * @todo TBA
+	 */
 	render(data, render = true) {
 		if (!data || (Array.isArray(data) && data.length == 0)) return this.renderError();
 		// console.log(data);
