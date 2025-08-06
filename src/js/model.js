@@ -1,5 +1,6 @@
 import { API_URL, KEY, RESULTS_PER_PAGE } from "./config";
-import { getData, sendData } from "./helpers";
+// import { getData, sendData } from "./helpers";
+import { AJAX } from "./helpers";
 
 export const state = {
 	recipe: {},
@@ -30,7 +31,7 @@ const createRecipeObject = function (data) {
 
 export const fetchRecipe = async function (id) {
 	try {
-		const data = await getData(`${API_URL}${id}`);
+		const data = await AJAX(`${API_URL}${id}?key=${KEY}`);
 		state.recipe = createRecipeObject(data);
 		if (state.bookmarks.some(bookmark => bookmark.id === id)) {
 			state.recipe.bookmarked = true;
@@ -43,13 +44,14 @@ export const fetchRecipe = async function (id) {
 export const loadSearchResult = async function (target) {
 	try {
 		state.search.target = target;
-		const data = await getData(`${API_URL}?search=${target}`);
+		const data = await AJAX(`${API_URL}?search=${target}&key=${KEY}`);
 		state.search.results = data.data.recipes.map(recipe => {
 			return {
 				id: recipe.id,
 				title: recipe.title,
 				publisher: recipe.publisher,
 				image: recipe.image_url,
+				...(recipe.key && { key: recipe.key }),
 			};
 		});
 	} catch (err) {
@@ -112,8 +114,8 @@ export const uploadRecipe = async function (newRecipe) {
 			.filter(entry => entry[0].startsWith("ingredient") && entry[1] !== "")
 			.map(ingredient => {
 				const ingredientArr = ingredient[1]
-					// .replaceAll(" ", "")
-					.split(",");
+					.split(",")
+					.map(ingredient => ingredient.trim());
 				if (ingredientArr.length !== 3)
 					throw new Error(
 						"Wrong ingredient format! Please follow the requirement 😩"
@@ -133,7 +135,7 @@ export const uploadRecipe = async function (newRecipe) {
 		};
 		console.log(ingredients);
 
-		const data = await sendData(`${API_URL}?key=${KEY}`, recipe);
+		const data = await AJAX(`${API_URL}?key=${KEY}`, recipe);
 		state.recipe = createRecipeObject(data);
 		addBookmark(state.recipe);
 	} catch (err) {
