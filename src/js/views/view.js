@@ -4,11 +4,32 @@ export default class View {
 	_data;
 
 	render(data) {
-		if (!data || (Array.isArray(data) && data.length == 0))
-			return this.renderError();
+		if (!data || (Array.isArray(data) && data.length == 0)) return this.renderError();
 		this._data = data;
 		const html = this._generateHTML();
 		this._replaceParent(html);
+	}
+
+	update(data) {
+		if (!data || (Array.isArray(data) && data.length == 0)) return this.renderError();
+		this._data = data;
+		const newHTML = this._generateHTML();
+		const newDOM = document.createRange().createContextualFragment(newHTML);
+		const newElements = Array.from(newDOM.querySelectorAll("*"));
+		const curElements = Array.from(this._parentEl.querySelectorAll("*"));
+		newElements.forEach((newEl, i) => {
+			const curEl = curElements[i];
+			// update changed text
+			if (!newEl.isEqualNode(curEl) && newEl.firstChild?.nodeValue.trim() !== "") {
+				curEl.textContent = newEl.textContent;
+			}
+			// update changed attribute
+			if (!newEl.isEqualNode(curEl)) {
+				Array.from(newEl.attributes).forEach(attribute =>
+					curEl.setAttribute(attribute.name, attribute.value)
+				);
+			}
+		});
 	}
 
 	_clearParent() {
