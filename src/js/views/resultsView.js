@@ -7,7 +7,6 @@ class ResultView extends View {
 	_message = "";
 
 	_generateHTML() {
-		console.log(this._data);
 		return this._data.map(this._generateHTMLPreview).join("");
 	}
 
