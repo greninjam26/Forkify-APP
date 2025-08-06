@@ -4,15 +4,6 @@ import recipeView from "./views/recipeView";
 import resultsView from "./views/resultsView";
 import searchView from "./views/searchView";
 
-// DOM selection
-const recipeDetails = document.querySelector(".recipe");
-
-// utility functions
-const addElement = function (element, position, html) {
-	element.innerHTML = "";
-	element.insertAdjacentHTML(position, html);
-};
-
 const controlRecipe = async function () {
 	try {
 		const id = window.location.hash.slice(1);
@@ -24,10 +15,11 @@ const controlRecipe = async function () {
 
 		// fetch the recipe
 		await model.fetchRecipe(id);
+		console.log(model.state.recipe);
 		// render the elements
 		recipeView.render(model.state.recipe);
 	} catch (err) {
-		recipeView.renderError();
+		recipeView.renderError(err);
 	}
 };
 
@@ -63,9 +55,17 @@ const controlServings = function (newServings) {
 	recipeView.update(model.state.recipe);
 };
 
+const controlBookmark = function () {
+	if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
+	else model.removeBookmark(model.state.recipe.id);
+	console.log(model.state.recipe);
+	recipeView.render(model.state.recipe);
+};
+
 const init = function () {
 	recipeView.addHandlerRender(controlRecipe);
 	recipeView.addHandlerUpdateServings(controlServings);
+	recipeView.addHandlerAddBookmark(controlBookmark);
 	searchView.addHandlerRender(controlSearch);
 	paginationView.addHandlerClick(controlPagination);
 };

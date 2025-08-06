@@ -5,8 +5,11 @@ export default class View {
 
 	render(data) {
 		if (!data || (Array.isArray(data) && data.length == 0)) return this.renderError();
+		// console.log(data);
 		this._data = data;
 		const html = this._generateHTML();
+		// console.log("?");
+		// console.log(html);
 		this._replaceParent(html);
 	}
 
