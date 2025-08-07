@@ -19,7 +19,6 @@ const controlRecipe = async function () {
 
 		// fetch the recipe
 		await model.fetchRecipe(id);
-		console.log(model.state.recipe);
 		// render the elements
 		recipeView.render(model.state.recipe);
 	} catch (err) {
@@ -63,7 +62,6 @@ const controlEditBookmark = function () {
 	// add or remove bookmark
 	if (!model.state.recipe.bookmarked) model.addBookmark(model.state.recipe);
 	else model.removeBookmark(model.state.recipe.id);
-	console.log(model.state.recipe);
 
 	// update the recipe view
 	recipeView.update(model.state.recipe);
@@ -101,7 +99,6 @@ const controlAddRecipe = async function (newRecipe) {
 			addRecipeView.toggleWindow();
 		}, MODEL_CLOSE_SECONDS);
 	} catch (err) {
-		console.error(err);
 		addRecipeView.renderError(err);
 	}
 };

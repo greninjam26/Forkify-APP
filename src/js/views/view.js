@@ -30,7 +30,6 @@ export default class View {
 		const newDOM = document.createRange().createContextualFragment(newHTML);
 		const newElements = Array.from(newDOM.querySelectorAll("*"));
 		const curElements = Array.from(this._parentEl.querySelectorAll("*"));
-		console.log(curElements);
 		newElements.forEach((newEl, i) => {
 			const curEl = curElements[i];
 			// update changed text
